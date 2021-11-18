@@ -59,7 +59,20 @@ def putRequest(unused_addr, uri, args):
 	print(str(in_json))
 	reply = requests.put(uri, json = in_json)
 	client.send_message("/REST/OSC", reply.text)
-	
+
+#PATCH Request
+def patchRequest(unused_addr, uri, args):
+	print("Received info for PATCH request")
+	in_json = json.loads(args)
+	print(str(in_json))
+	reply = requests.patch(uri, json = in_json)
+	client.send_message("/REST/OSC", reply.text)
+
+#DELETE Request
+def deleteRequest(unused_addr, uri):
+	print("Received info for DELETE request")
+	reply = requests.delete(uri)
+	client.send_message("/REST/OSC", reply.text)
 
 #Main execution script--------------------------------------
 if __name__ == "__main__":
@@ -97,6 +110,8 @@ if __name__ == "__main__":
 	dispatcher.map("/OSC/REST/GET", getRequest)
 	dispatcher.map("/OSC/REST/POST", postRequest)
 	dispatcher.map("/OSC/REST/PUT", putRequest)
+	dispatcher.map("/OSC/REST/PATCH", patchRequest)
+	dispatcher.map("/OSC/REST/DELETE", deleteRequest)
 
 	#set up server to listen for osc messages
 	server = osc_server.ThreadingOSCUDPServer((send_ip,receive_port),dispatcher)
