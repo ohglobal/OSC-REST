@@ -1,0 +1,6 @@
+
+dist/
+build/
+__pycache__
+OSC-REST.sln
+.vs
