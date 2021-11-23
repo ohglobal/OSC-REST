@@ -27,38 +27,64 @@ def getRequest(unused_addr, *args):
 	uri = args[0]
 	file_name = ""
 
+	tag = args[1]
+
 	#determine if a file name was provided as an arg
-	if(len(args) > 1):
-		file_name = args[1]
+	if(len(args) > 2):
+		file_name = args[2]
 
 	response = requests.get(uri)
+
+	res_str = "OSC-REST ERROR"
+	try:
+		res_str = str(response.json())
+	except:
+		print("OSC-REST ERROR: Could not communicate with server, or server returned 204 / other response code")
 
 	#if a file name was provided, save the response to disk and notify via OSC
 	if(file_name != ""):
 		print("Sending response via disk")
 		outFile = open(file_name,"w+")
-		outFile.write(str(response.json()))
-		client.send_message("/REST/OSC/fileComplete", 1)
+		outFile.write(res_str)
+		osc_str = "/REST/OSC/fileComplete/" + tag
+		client.send_message(osc_str, 1)
 	#otherwise, send the entire response via OSC
 	else:
 		print("Sending response via OSC")
-		client.send_message("/REST/OSC", str(response.json()))
+		osc_str = "/REST/OSC/" + tag
+		client.send_message(osc_str, res_str)
 
 #POST Request
-def postRequest(unused_addr, uri, args):
+def postRequest(unused_addr, uri, tag, args):
 	print("Received info for POST request")
 	in_json = json.loads(args)
 	print(str(in_json))
 	reply = requests.post(uri, json = in_json)
-	client.send_message("/REST/OSC", reply.text)
+
+	res_str = "OSC-REST ERROR"
+	try:
+		res_str = str(reply.text)
+	except:
+		print("OSC-REST ERROR: Could not communicate with server, or server returned 204 / other response code")
+
+	osc_str = "/REST/OSC/" + tag
+	client.send_message(osc_str, res_str)
 
 #PUT Request
-def putRequest(unused_addr, uri, args):
+def putRequest(unused_addr, uri, tag, args):
 	print("Received info for PUT request")
 	in_json = json.loads(args)
 	print(str(in_json))
 	reply = requests.put(uri, json = in_json)
-	client.send_message("/REST/OSC", reply.text)
+
+	res_str = "OSC-REST ERROR"
+	try:
+		res_str = str(reply.text)
+	except:
+		print("OSC-REST ERROR: Could not communicate with server, or server returned 204 / other response code")
+
+	osc_str = "/REST/OSC/" + tag
+	client.send_message(osc_str, res_str)
 	
 
 #Main execution script--------------------------------------
