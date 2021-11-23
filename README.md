@@ -14,7 +14,10 @@ Launch the application and either select the default networking options or input
 
 /OSC/REST/PUT {string uri, string tag, string json} - initiate a PUT request with the provided JSON string passed as the argument. If the server responds, the response will be sent via OSC.
 
-## Commands to Receive (*tag* denotes the tag wildcard provided in the sending OSC packets as an argument)
+## Commands to Receive 
+
+(*tag* denotes the tag wildcard provided in the sending OSC packets as an argument)
+
 /REST/OSC/*tag* {string response} - the response string from the given request
 
 /REST/OSC/fileComplete/*tag* {int 1} - an indication that the file containing the response has been written to disk
